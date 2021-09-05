@@ -1,0 +1,7 @@
+---
+# tasks file for installing media wiki
+- name: Downloading Zip and extracting it
+  ansible.builtin.unarchive:
+    src: "https://releases.wikimedia.org/mediawiki/1.36/mediawiki-1.36.1.tar.gz"
+    dest: "/var/www/html/"
+    remote_src: yes

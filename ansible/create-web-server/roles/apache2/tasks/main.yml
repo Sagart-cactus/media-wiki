@@ -1,0 +1,82 @@
+---
+# tasks file for apache2
+- name: install packages
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: enabled mod_rewrite
+  apache2_module: name=rewrite state=present
+  notify:
+    - restart apache2
+- name: apache2 listen on port {{ http_port }}
+  become: yes
+  lineinfile: dest=/etc/apache2/ports.conf regexp="^Listen " line="Listen {{ http_port }}" state=present
+  notify:
+    - restart apache2
+
+- name: Add the listen on port {{ https_port }}
+  become: yes
+  blockinfile:
+    mode: u=rw,g=rw,o=rw
+    path: /etc/apache2/ports.conf
+    insertafter: EOF
+    block: |
+      Listen {{ https_port }}
+
+- name: Execute sed command to restrict directory listing
+  become: yes
+  replace:
+    path: /etc/apache2/apache2.conf
+    regexp: 'Options Indexes FollowSymLinks'
+    replace: 'Options FollowSymLinks'
+
+- name: Turn off server signature and server token
+  become: yes
+  replace:
+    path: "{{ item.path }}"
+    regexp: "{{ item.regexp1 }}"
+    replace: "{{ item.replace }}"
+  with_items:
+    - { path: '/etc/apache2/conf-enabled/security.conf', regexp1: 'ServerSignature On', replace: 'ServerSignature Off'}
+    - { path: '/etc/apache2/conf-enabled/security.conf', regexp1: 'ServerTokens OS', replace: 'ServerTokens Prod'}
+
+- name: Change the log format
+  replace:
+    path: /etc/apache2/apache2.conf
+    regexp: '^LogFormat'
+    replace: '#LogFormat'
+
+- name: Add the following lines in the apache2.conf
+  become: yes
+  blockinfile:
+    path: /etc/apache2/apache2.conf
+    insertafter: EOF
+    mode: u=rw,g=rw,o=rw
+    block: "{{ lookup('file','block_apacheconf') }}"
+
+- name: apache2 virtualhost on port {{ http_port }} and {{ https_port }}
+  notify:
+    - restart apache2
+  become: yes
+  template:
+    dest: "/etc/apache2/sites-enabled/{{ ServerName }}.conf"
+    mode: u=rw,g=rw,o=rw
+    src: virtualhost
+
+- name: Delete the default config file
+  file:
+    path: /etc/apache2/sites-enabled/000-default.conf
+    state: absent
+  become: yes
+  notify:
+    - restart apache2
+
+- name: a2ensite {{ domain }}
+  command: a2ensite {{ domain }}
+  args:
+    creates: /etc/apache2/sites-enabled/{{ domain }}.conf
+  notify:
+    - restart apache2

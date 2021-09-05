@@ -1,0 +1,27 @@
+---
+
+- hosts: all
+  become: yes
+  gather_facts: no
+  roles:
+    - apache2
+    - php7.2
+    - media_wiki
+  vars:
+    http_port: 80
+    https_port: 8080
+    ServerName: mediawiki.test
+    ServerAlias: mediawiki.test
+    domain: mediawiki.test
+    home_directory: '/var/www/html'
+    packages:
+      - apache2
+      - libapache2-mod-php
+    php_packages:
+      - php
+      - php-mysql
+      - php-xml
+      - php-intl
+      - php-gd
+      - php-curl
+      - php-mbstring

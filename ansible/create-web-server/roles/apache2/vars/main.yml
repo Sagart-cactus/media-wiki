@@ -1,0 +1,11 @@
+---
+# vars file for apache2
+# http_port: 80
+# https_port: 8080
+# ServerName: editage.co.kr
+# ServerAlias: editage.co.kr www.editage.co.kr *.editage.co.kr
+# domain: editage.co.kr
+# home_directory: '/var/www/html'
+# packages:
+#   - apache2
+#   - libapache2-mod-php7.2
