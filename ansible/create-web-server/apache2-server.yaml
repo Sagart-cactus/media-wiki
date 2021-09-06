@@ -10,6 +10,10 @@
   vars:
     http_port: 80
     https_port: 8080
+    mysql_password: "{{ mysql_password }}"
+    mysql_host: "{{ mysql_host }}"
+    admin_pass: "{{ admin_pass }}"
+    wiki_host: "{{ wiki_host }}"
     ServerName: mediawiki.test
     ServerAlias: mediawiki.test
     domain: mediawiki.test

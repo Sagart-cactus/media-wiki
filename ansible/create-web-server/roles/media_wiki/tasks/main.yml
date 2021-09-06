@@ -5,3 +5,8 @@
     src: "https://releases.wikimedia.org/mediawiki/1.36/mediawiki-1.36.1.tar.gz"
     dest: "/var/www/html/"
     remote_src: yes
+- name: Install MediaWiki Server
+  become: yes
+  ansible.builtin.shell: php install.php --dbuser=example_user --dbpass={{ mysql_password|quote }} --dbname=example_db --dbserver={{ mysql_host|quote }} --pass={{ admin_pass|quote }} --server={{ wiki_host|quote }} --scriptpath=/mediawiki-1.36.1 mediawiki-test admin
+  args:
+    chdir: /var/www/html/mediawiki-1.36.1/maintenance
