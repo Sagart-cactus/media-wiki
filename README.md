@@ -141,3 +141,5 @@ The reference doc specifies that mysql and application to be installed in the sa
 ### Better way to manage credentials
 I would have used secure SSM parameter store or secrets manager to store the password and credentials for the Stack/Database.
 
+### Alarms and Monitoring
+I would have added atleast CPU and Disk Monitoring on the servers for better visibility.
