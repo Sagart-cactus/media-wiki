@@ -25,6 +25,7 @@ Check if the CDK has been installed properly
 ```
 cdk --version
 ```
+We will need CDK 1.121 for this stack
 
 ## Step 2: Git Clone
 Clone the repository
@@ -43,8 +44,10 @@ cd media-wiki\cdk\
 We create a seperate .venv environment so that we do not break or include something global.
 
 ```
+python3 -m venv .venv 
 source .venv/bin/activate
 ```
+Make sure that you have virtual env installed on your system, you can do so by  `sudo apt install python3.8-venv`
 
 Install all the dependencies
 
@@ -63,6 +66,7 @@ If this gives you output go ahead and deploy our stack
 ```
 cdk deploy --all
 ```
+You would be asked whether you want to deploy changes related to security like opening up ports etc. You will have to press `y` to proceed. If you trust me with your account and do not like pressing `y` every now and then use `--require-approval never` flag.
 
 ## Install the App on the servers created.
 The above steps have just created blank server with just ansible installed in them. We will execute a few ansible playbooks to install the media-wiki server.
