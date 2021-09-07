@@ -98,7 +98,7 @@ We will first create the mysql server, we will need to execute the below command
 ```
 aws ssm send-command --document-name "AWS-ApplyAnsiblePlaybooks" --document-version "1" --targets '[{"Key":"tag:app_type","Values":["app_server"]}]' --parameters '{"SourceType":["S3"],"SourceInfo":["{\n\"path\":\"https://s3.amazonaws.com/ansible-deployment-prod/create-web-server/\"\n}"],"InstallDependencies":["True"],"PlaybookFile":["mysql.yaml"],"ExtraVariables":["SSM=True\nmysql_root_password=supersecure@123\nmysql_user_password=sagart@123"],"Check":["False"],"Verbose":["-v"],"TimeoutSeconds":["3600"]}' --timeout-seconds 600 --max-concurrency "50" --max-errors "0" --output-s3-bucket-name "ansible-deployment-prod" --output-s3-key-prefix "execution-output"
 ```
-The above command will take some time. You will need to check the status of the command on this https://{{your-region}}console.aws.amazon.com/systems-manager/run-command/executing-commands?region={{your-region}}
+The above command will take some time. You will need to check the status of the command on `https://{{your-region}}console.aws.amazon.com/systems-manager/run-command/executing-commands?region={{your-region}}`
 
 The above command will
 - install `mysql` server
@@ -125,7 +125,7 @@ Then we execute this.
 aws ssm send-command --document-name "AWS-ApplyAnsiblePlaybooks" --document-version "1" --targets '[{"Key":"tag:app_type","Values":["app_server"]}]' --parameters '{"SourceType":["S3"],"SourceInfo":["{\n\"path\":\"https://s3.amazonaws.com/ansible-deployment-prod/create-web-server/\"\n}"],"InstallDependencies":["True"],"PlaybookFile":["apache2-server.yaml"],"ExtraVariables":["SSM=True\nmysql_password=sagart@123\nmysql_host=localhost\nwiki_host=http://'$(echo $SERVER_IP)'\nadmin_pass=supersecure@123"],"Check":["False"],"Verbose":["-v"],"TimeoutSeconds":["3600"]}' --timeout-seconds 600 --max-concurrency "50" --max-errors "0" --output-s3-bucket-name "ansible-deployment-prod" --output-s3-key-prefix "execution-output"
 ```
 
-The above command will take some time. You will need to check the status of the command on this https://{{your-region}}console.aws.amazon.com/systems-manager/run-command/executing-commands?region={{your-region}}
+The above command will take some time. You will need to check the status of the command on `https://{{your-region}}console.aws.amazon.com/systems-manager/run-command/executing-commands?region={{your-region}}`
 
 ## Visting out Test Mediawiki
 
