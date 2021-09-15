@@ -96,21 +96,20 @@ aws s3 cp . s3://ansible-deployment-prod/create-web-server/ --recursive
 ---
 # Please read this for the AMI approach
 
-After removing my Thinker hat and wearing the implementer hat, I quickly realized that the approach of AMI was not so great because of following reasons
+After removing my thinker hat and wearing the implementer hat, I quickly realized that the approach of AMI was not so great because of following reasons
 - Too many steps to be performed
-    - create the all the stack except for the ASG and ALB stack
-    - then create AMI
-    - then continue creating the ASG and ALB
-    - only to find out that the config contains the IP address of the source instance whose AMI was created.
-    - We can solve the above too with another ansible playbook execution which will change the media wiki hostname config
+    - Create all the stacks except for the ASG and ALB stack
+    - Then create AMI
+    - Then continue creating the ASG and ALB
+    - Only to find out that the config contains the IP address of the source instance whose AMI was created.
 
-But all this makes this approach long and complex. In short the AMI approach works only if the AMI is already created and ready to use. If you are expecting the stack to create the machine first and then create AMI then this will as said earlier probably be too long and complex.
+I could have solved the above problem too by writing another ansible playbook and executing it which will change the media wiki hostname config, But all this makes this approach long and complex. In short, the AMI approach works only if the AMI is already created and ready to use(maybe from a separate EC image creation pipeline). If we are expecting the stack to create the machine first and then create AMI it will become too lenthy and complex.
 
 # Simpler Approach
 
-Hence, I went ahead with a simple approach, no changes in the number of steps. ;)
+Hence, I went ahead with a simple approach and no changes in the number of steps. ;)
 
-The only thing that changes is instead of Public IP of the instance we will pass the DNS entry of the ALB created and move the instances to the private subnet, rest all remains the same.
+The only thing that's changed is, instead of Public IP of the instance, we will pass the DNS entry of the ALB created and move the instances to the private subnet, with no changes in the remaining stacks.
 
 ---
 ---
