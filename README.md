@@ -107,7 +107,7 @@ I could have solved the above problem too by writing another ansible playbook an
 
 # Simpler Approach
 
-Hence, I went ahead with a simple approach and no changes in the number of steps. ;)
+Hence, I went ahead with a simple approach and no changes in the number of steps. 😉
 
 The only thing that's changed is, instead of Public IP of the instance, we will pass the DNS entry of the ALB created and move the instances to the private subnet, with no changes in the remaining stacks.
 
