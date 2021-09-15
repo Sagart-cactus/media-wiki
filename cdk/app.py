@@ -7,6 +7,7 @@ from iam_stack import IamStack
 from mediawiki_app_stack import MediaWikiStack
 from deployment_S3 import DeploymentS3Stack
 from mediawiki_db_stack import MediaWikiDBStack
+from mediawiki_asg_alb_stack import MediaWikiALBASGStack
 
 app = cdk.App()
 
@@ -38,7 +39,7 @@ ami_map = {
     "eu-west-3": "ami-0953b38f670ad3e1e"
 }
 
-vpc_stack = VPCStack(app, "MediaWiki-VPC", region_name='mu', env_name='prod'
+vpc_stack = VPCStack(app, "MediaWiki-VPC", region_name='mu', env_name='prod',
                      # If you don't specify 'env', this stack will be environment-agnostic.
                      # Account/Region-dependent features and context lookups will not work,
                      # but a single synthesized template can be deployed anywhere.
@@ -46,7 +47,8 @@ vpc_stack = VPCStack(app, "MediaWiki-VPC", region_name='mu', env_name='prod'
                      # Uncomment the next line to specialize this stack for the AWS Account
                      # and Region that are implied by the current CLI configuration.
 
-                     # env=core.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'), region=os.getenv('CDK_DEFAULT_REGION')),
+                     env=cdk.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'),
+                                         region=os.getenv('CDK_DEFAULT_REGION')),
 
                      # Uncomment the next line if you know exactly what Account and Region you
                      # want to deploy the stack to. */
@@ -56,7 +58,7 @@ vpc_stack = VPCStack(app, "MediaWiki-VPC", region_name='mu', env_name='prod'
                      # For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html
                      )
 
-deployments3 = DeploymentS3Stack(app, "MediaWiki-Deployment", env_name='prod', website_branch='main'
+deployments3 = DeploymentS3Stack(app, "MediaWiki-Deployment", env_name='prod', website_branch='main',
                                  # If you don't specify 'env', this stack will be environment-agnostic.
                                  # Account/Region-dependent features and context lookups will not work,
                                  # but a single synthesized template can be deployed anywhere.
@@ -64,7 +66,8 @@ deployments3 = DeploymentS3Stack(app, "MediaWiki-Deployment", env_name='prod', w
                                  # Uncomment the next line to specialize this stack for the AWS Account
                                  # and Region that are implied by the current CLI configuration.
 
-                                 # env=core.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'), region=os.getenv('CDK_DEFAULT_REGION')),
+                                 env=cdk.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'),
+                                                     region=os.getenv('CDK_DEFAULT_REGION')),
 
                                  # Uncomment the next line if you know exactly what Account and Region you
                                  # want to deploy the stack to. */
@@ -82,7 +85,8 @@ iam_stack = IamStack(app, "MediaWiki-Iam", deployments3=deployments3.deploymnet_
                      # Uncomment the next line to specialize this stack for the AWS Account
                      # and Region that are implied by the current CLI configuration.
 
-                     # env=core.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'), region=os.getenv('CDK_DEFAULT_REGION')),
+                     env=cdk.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'),
+                                         region=os.getenv('CDK_DEFAULT_REGION')),
 
                      # Uncomment the next line if you know exactly what Account and Region you
                      # want to deploy the stack to. */
@@ -92,24 +96,46 @@ iam_stack = IamStack(app, "MediaWiki-Iam", deployments3=deployments3.deploymnet_
                      # For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html
                      )
 
-mediawiki_stack = MediaWikiStack(app, "MediaWiki-App", region_name='mu', env_name='prod', vpc=vpc_stack.vpc,
-                                 role=iam_stack.app_role, ami_map=ami_map
-                                 # If you don't specify 'env', this stack will be environment-agnostic.
-                                 # Account/Region-dependent features and context lookups will not work,
-                                 # but a single synthesized template can be deployed anywhere.
+# mediawiki_stack = MediaWikiStack(app, "MediaWiki-App", region_name='mu', env_name='prod', vpc=vpc_stack.vpc,
+#                                  role=iam_stack.app_role, ami_map=ami_map,
+#                                  # If you don't specify 'env', this stack will be environment-agnostic.
+#                                  # Account/Region-dependent features and context lookups will not work,
+#                                  # but a single synthesized template can be deployed anywhere.
+#
+#                                  # Uncomment the next line to specialize this stack for the AWS Account
+#                                  # and Region that are implied by the current CLI configuration.
+#
+#                                  env=cdk.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'),
+#                                                      region=os.getenv('CDK_DEFAULT_REGION')),
+#
+#                                  # Uncomment the next line if you know exactly what Account and Region you
+#                                  # want to deploy the stack to. */
+#
+#                                  # env=core.Environment(account='123456789012', region='us-east-1'),
+#
+#                                  # For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html
+#                                  )
 
-                                 # Uncomment the next line to specialize this stack for the AWS Account
-                                 # and Region that are implied by the current CLI configuration.
+mediawiki_alb_asg_stack = MediaWikiALBASGStack(app, "MediaWiki-Alb-asg", region_name='mu', env_name='prod',
+                                               vpc=vpc_stack.vpc,
+                                               role=iam_stack.app_role, ami_map=ami_map,
+                                               # If you don't specify 'env', this stack will be environment-agnostic.
+                                               # Account/Region-dependent features and context lookups will not work,
+                                               # but a single synthesized template can be deployed anywhere.
 
-                                 # env=core.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'), region=os.getenv('CDK_DEFAULT_REGION')),
+                                               # Uncomment the next line to specialize this stack for the AWS Account
+                                               # and Region that are implied by the current CLI configuration.
 
-                                 # Uncomment the next line if you know exactly what Account and Region you
-                                 # want to deploy the stack to. */
+                                               env=cdk.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'),
+                                                                   region=os.getenv('CDK_DEFAULT_REGION')),
 
-                                 # env=core.Environment(account='123456789012', region='us-east-1'),
+                                               # Uncomment the next line if you know exactly what Account and Region you
+                                               # want to deploy the stack to. */
 
-                                 # For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html
-                                 )
+                                               # env=core.Environment(account='123456789012', region='us-east-1'),
+
+                                               # For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html
+                                               )
 
 # mediawiki_db_stack = MediaWikiDBStack(app, "MediaWiki-DB", region_name='mu', env_name='prod', vpc=vpc_stack.vpc,
 #                                       role=iam_stack.app_role, app_system=mediawiki_stack.mediawiki_app_system,

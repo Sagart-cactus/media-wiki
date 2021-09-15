@@ -92,6 +92,29 @@ cd media-wiki/ansible/create-web-server
 aws s3 cp . s3://ansible-deployment-prod/create-web-server/ --recursive
 ```
 
+---
+---
+# Please read this for the AMI approach
+
+After removing my Thinker hat and wearing the implementer hat, I quickly realized that the approach of AMI was not so great because of following reasons
+- Too many steps to be performed
+    - create the all the stack except for the ASG and ALB stack
+    - then create AMI
+    - then continue creating the ASG and ALB
+    - only to find out that the config contains the IP address of the source instance whose AMI was created.
+    - We can solve the above too with another ansible playbook execution which will change the media wiki hostname config
+
+But all this makes this approach long and complex. In short the AMI approach works only if the AMI is already created and ready to use. If you are expecting the stack to create the machine first and then create AMI then this will as said earlier probably be too long and complex.
+
+# Simpler Approach
+
+Hence, I went ahead with a simple approach, no changes in the number of steps. ;)
+
+The only thing that changes is instead of Public IP of the instance we will pass the DNS entry of the ALB created and move the instances to the private subnet, rest all remains the same.
+
+---
+---
+
 ## Creating MySQL server first
 We will first create the mysql server, we will need to execute the below command But before that, you will need to modify the credentials of the db (if you want a more secure password) by changing the values of `mysql_root_password=supersecure@123` and `mysql_user_password=sagart@123` in the below command.
 
@@ -115,7 +138,7 @@ For creating the Media-wiki server we will execute another ansible playbook with
 - Password for the admin user that will be created.
 
 ```
-export SERVER_IP=$(aws ec2 describe-instances --query "Reservations[].Instances[][PublicIpAddress]" --filter "Name=tag:app_type,Values=app_server" "Name=instance-state-name,Values=running" --output text)
+ export SERVER_IP=$(aws elbv2 describe-load-balancers --query 'LoadBalancers[*].[DNSName]' --names 'mu-lb-mediawiki-prod' --output text)
 ```
 
 The above step will get the public IP of the ec2 instance and store it in the `SERVER_IP` env variable.

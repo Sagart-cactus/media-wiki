@@ -23,7 +23,8 @@ setuptools.setup(
         "aws-cdk.aws-iam==1.121.0",
         "aws-cdk.aws-ec2==1.121.0",
         "aws-cdk.aws-codebuild==1.121.0",
-        "aws-cdk.aws-elasticloadbalancingv2==1.121.0"
+        "aws-cdk.aws-elasticloadbalancingv2==1.121.0",
+        "aws-cdk.aws-autoscaling==1.121.0"
     ],
 
     python_requires=">=3.6",

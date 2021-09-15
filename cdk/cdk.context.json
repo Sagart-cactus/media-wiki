@@ -1,1 +1,8 @@
-{}
+{
+  "availability-zones:account=585726119552:region=ap-south-1": [
+    "ap-south-1a",
+    "ap-south-1b",
+    "ap-south-1c"
+  ],
+  "ami:account=585726119552:filters.image-type.0=machine:filters.name.0=media-wiki-first:filters.state.0=available:region=ap-south-1": "ami-02ae523926ba3f4ab"
+}
